@@ -9,7 +9,7 @@ from modules.downloader import Downloader
 from modules.history import History
 from modules.config import Config
 
-class MediaDownloader:
+class DzeckDownloader:
     def __init__(self):
         self.config = Config()
         self.ui = UI(self.config)
@@ -33,7 +33,7 @@ class MediaDownloader:
             elif choice == '5' or choice == '6':
                 self.handle_adult_content(choice)
             elif choice == '7':
-                self.ui.print_message("Terima kasih telah menggunakan Media Downloader!", style="info")
+                self.ui.print_message("Terima kasih telah menggunakan Dzeck!", style="info")
                 sys.exit(0)
             else:
                 self.ui.print_message("Pilihan tidak valid, silakan coba lagi.", style="error")
@@ -183,7 +183,7 @@ class MediaDownloader:
 
 if __name__ == '__main__':
     try:
-        app = MediaDownloader()
+        app = DzeckDownloader()
         app.run()
     except KeyboardInterrupt:
         print("\nProses dihentikan oleh pengguna. Keluar.")

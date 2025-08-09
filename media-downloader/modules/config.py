@@ -2,12 +2,12 @@ import json
 import os
 
 class Config:
-    def __init__(self, config_path='~/.media_downloader/config.json'):
+    def __init__(self, config_path='~/.dzeck_downloader/config.json'):
         self.config_file = os.path.expanduser(config_path)
         self.config_dir = os.path.dirname(self.config_file)
 
         # Default storage path for Termux
-        default_download_path = os.path.expanduser('~/storage/downloads/MediaDownloader')
+        default_download_path = os.path.expanduser('~/storage/downloads/DzeckDownloader')
 
         self.defaults = {
             'download_path': default_download_path,

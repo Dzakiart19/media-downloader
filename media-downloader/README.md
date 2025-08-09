@@ -1,8 +1,8 @@
-# Media Downloader v1.0.0
+# Dzeck v1.0.0
 
-Sebuah skrip downloader media multi-platform yang interaktif dan kaya fitur untuk Termux. Dibuat untuk memberikan pengalaman pengguna yang lebih baik daripada skrip CLI dasar.
+Sebuah skrip downloader media multi-platform yang interaktif dan kaya fitur untuk Termux, dengan nama Dzeck. Dibuat untuk memberikan pengalaman pengguna yang lebih baik daripada skrip CLI dasar.
 
-**Dibuat oleh:** AI Agent Jules
+**Dibuat oleh:** Dzeck
 
 **Peringatan Legal:** Skrip ini ditujukan untuk penggunaan pribadi dan legal. Pastikan Anda memiliki hak untuk mengunduh konten dari URL yang Anda masukkan. Mengunduh materi berhak cipta tanpa izin adalah ilegal. Pengguna bertanggung jawab penuh atas tindakan mereka.
 
@@ -80,13 +80,13 @@ Atau, jika Anda berada di dalam folder proyek:
 3.  **Pratinjau Metadata:** Skrip akan menampilkan judul, uploader, dan durasi.
 4.  **Konfirmasi & Pilih Kualitas:** Konfirmasi unduhan (y) dan pilih kualitas yang Anda inginkan.
 5.  **Tonton Prosesnya:** Progress bar akan menunjukkan kemajuan unduhan.
-6.  **Selesai:** Notifikasi akan muncul saat selesai. File Anda akan berada di folder unduhan yang dikonfigurasi (default: `~/storage/downloads/MediaDownloader`).
+6.  **Selesai:** Notifikasi akan muncul saat selesai. File Anda akan berada di folder unduhan yang dikonfigurasi (default: `~/storage/downloads/DzeckDownloader`).
 
 ---
 
 ## Konfigurasi
 
-Saat pertama kali dijalankan, skrip akan membuat file konfigurasi di `~/.media_downloader/config.json`. Anda dapat mengeditnya secara manual atau melalui menu **Pengaturan** di dalam aplikasi.
+Saat pertama kali dijalankan, skrip akan membuat file konfigurasi di `~/.dzeck_downloader/config.json`. Anda dapat mengeditnya secara manual atau melalui menu **Pengaturan** di dalam aplikasi.
 
 -   `download_path`: Lokasi penyimpanan file.
 -   `filename_template`: Pola untuk nama file. Lihat `config.json.example` untuk detailnya.
@@ -151,7 +151,7 @@ Masukkan pilihan kualitas: best
 [*] Pastikan Anda memiliki hak untuk mengunduh konten ini...
 [*] Mempersiapkan download untuk kualitas 'best'...
   [██████████████████████████████] 100.0% | 12.34 MB/s | ETA: 0s
-[+] Download selesai: /data/data/com.termux/files/home/storage/downloads/MediaDownloader/youtube_Rick Astley - Never Gonna Give You Up (Official Music Video)_dQw4w9WgXcQ.mp4
+[+] Download selesai: /data/data/com.termux/files/home/storage/downloads/DzeckDownloader/youtube_Rick Astley - Never Gonna Give You Up (Official Music Video)_dQw4w9WgXcQ.mp4
 
 Tekan Enter untuk kembali...
 ```
