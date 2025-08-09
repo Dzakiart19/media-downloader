@@ -8,7 +8,7 @@ class Downloader:
         self.config = config
         self.ui = ui
 
-    def _get_yt_dlp_options(self, quality, extra_opts=None):
+    def _get_yt_dlp_options(self, quality, cookies_file=None, extra_opts=None):
         """Constructs the options dictionary for yt-dlp."""
         download_path = self.config.get('download_path')
         filename_template = self.config.get('filename_template')
@@ -28,12 +28,18 @@ class Downloader:
         elif quality == 'audio':
             format_string = 'bestaudio/best'
 
+        user_agent = self.config.get('user_agent')
+
         opts = {
             'format': format_string,
             'outtmpl': output_template,
             'progress_hooks': [self.ui.download_progress_hook],
             'writemetadata': True,
             'external_downloader': 'aria2c',
+            'http_headers': {
+                'User-Agent': user_agent,
+                'Referer': 'https://www.google.com' # Adding a generic referer can also help
+            },
             'external_downloader_args': ['-x', '16', '-s', '16', '-k', '1M'],
             'postprocessors': [{
                 'key': 'FFmpegMetadata',
@@ -50,6 +56,9 @@ class Downloader:
                 'preferredcodec': 'mp3',
                 'preferredquality': '192',
             })
+
+        if cookies_file and os.path.exists(cookies_file):
+            opts['cookiefile'] = cookies_file
 
         if extra_opts and isinstance(extra_opts, dict):
             opts.update(extra_opts)
@@ -78,12 +87,14 @@ class Downloader:
             self.ui.print_message(f"Terjadi error tidak terduga saat mengambil metadata: {e}", "error")
             return None
 
-    def download(self, url, quality):
+    def download(self, url, quality, cookies_file=None):
         """Downloads the video with the specified quality."""
         self.ui.print_message(f"Mempersiapkan download untuk kualitas '{quality}'...", "info")
+        if cookies_file:
+            self.ui.print_message("Menggunakan file cookies...", "info")
 
         try:
-            opts = self._get_yt_dlp_options(quality)
+            opts = self._get_yt_dlp_options(quality, cookies_file=cookies_file)
             with yt_dlp.YoutubeDL(opts) as ydl:
                 # The actual download happens here
                 ydl.download([url])
