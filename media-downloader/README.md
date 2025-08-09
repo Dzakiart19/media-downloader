@@ -1,8 +1,8 @@
-# Dzeck v1.0.0
+# DZECK v1.0.0
 
-Sebuah skrip downloader media multi-platform yang interaktif dan kaya fitur untuk Termux, dengan nama Dzeck. Dibuat untuk memberikan pengalaman pengguna yang lebih baik daripada skrip CLI dasar.
+Sebuah skrip downloader media multi-platform yang interaktif dan kaya fitur untuk Termux, dengan nama DZECK. Dibuat untuk memberikan pengalaman pengguna yang lebih baik daripada skrip CLI dasar.
 
-**Dibuat oleh:** Dzeck
+**Dibuat oleh:** DZECK
 
 **Peringatan Legal:** Skrip ini ditujukan untuk penggunaan pribadi dan legal. Pastikan Anda memiliki hak untuk mengunduh konten dari URL yang Anda masukkan. Mengunduh materi berhak cipta tanpa izin adalah ilegal. Pengguna bertanggung jawab penuh atas tindakan mereka.
 
@@ -126,7 +126,7 @@ $ media-downloader
 MENU UTAMA
   1. Download Baru
   ...
-  7. Keluar
+  6. Keluar
 Pilih opsi: 1
 
 Masukkan satu atau beberapa URL (pisahkan dengan spasi): https://www.youtube.com/watch?v=dQw4w9WgXcQ
@@ -156,7 +156,7 @@ Masukkan pilihan kualitas: best
 Tekan Enter untuk kembali...
 ```
 
-**Sesi "Konten Dewasa 2 (dengan Cookies)":**
+**Sesi "Konten Dewasa":**
 ```
 $ media-downloader
 
@@ -164,21 +164,17 @@ $ media-downloader
 
 MENU UTAMA
   ...
-  6. Konten Dewasa 2
+  5. Konten Dewasa
   ...
-Pilih opsi: 6
+Pilih opsi: 5
 
 [-] PERINGATAN KONTEN DEWASA & LEGAL
 ...
 Apakah Anda berusia 18 tahun atau lebih dan setuju dengan persyaratan di atas? (y/n): y
 
 [*] Persetujuan diterima untuk sesi ini.
-[*] Mode Dewasa Lanjutan: Menggunakan file Cookies.
-[*] Mode Download dengan Cookies. Ini memungkinkan akses ke konten yang memerlukan login.
+[*] Mode Dewasa: Menggunakan User-Agent khusus.
 ...
-Masukkan path lengkap ke file cookies.txt (biarkan kosong untuk batal): /data/data/com.termux/files/home/cookies.txt
-
-[*] Menggunakan file cookies...
-Masukkan satu atau beberapa URL (pisahkan dengan spasi): [URL yang memerlukan login]
+Masukkan satu atau beberapa URL (pisahkan dengan spasi): [URL konten dewasa]
 ...
 ```

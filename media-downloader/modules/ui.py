@@ -48,20 +48,18 @@ class UI:
 
     def display_header(self):
         self.clear_screen()
-        header = f"""
-{self.c('header')}
-   /$$$$$$$  /$$$$$$$$ /$$$$$$$$ /$$$$$$  /$$   /$$
-  | $$__  $$| $$_____/| $$_____/|_  $$_/ | $$  /$$/
-  | $$  \ $$| $$      | $$        | $$   | $$ /$$/
-  | $$$$$$$/| $$$$$   | $$$$$     | $$   | $$$$$/
-  | $$____/ | $$__/   | $$__/     | $$   | $$  $$
-  | $$      | $$      | $$        | $$   | $$\  $$
-  | $$      | $$$$$$$$| $$$$$$$$ /$$$$$$ | $$ \  $$
-  |__/      |________/|________/|______/ |__/  \__/
-{self.c('end')}
-{self.c('primary')}                        v1.0.0 - by Dzeck{self.c('end')}
-        """
-        print(header)
+        header_lines = [
+            f"{self.c('header')}",
+            "  ____   ______ ______  _   _  _  __",
+            " |  _ \\ |__  __|  ____|| \\ | || |/ /",
+            " | |_) |   | |  | |__   |  \\| || ' / ",
+            " |  _ <    | |  |  __|  | . ` ||  <  ",
+            " | |_) |   | |  | |____ | |\\  || . \\ ",
+            " |____/    |_|  |______||_| \\_||_|\\_\\",
+            f"{self.c('end')}",
+            f"{self.c('primary')}                        v1.0.0 - by DZECK{self.c('end')}"
+        ]
+        print("\n".join(header_lines))
 
     def display_main_menu(self):
         print(f"\n{self.c('bold')}{self.c('primary')}MENU UTAMA{self.c('end')}")
@@ -70,9 +68,8 @@ class UI:
             "2": "Lihat Antrian",
             "3": "Riwayat Download",
             "4": "Pengaturan",
-            "5": "Konten Dewasa 1",
-            "6": "Konten Dewasa 2",
-            "7": "Keluar"
+            "5": "Konten Dewasa",
+            "6": "Keluar"
         }
         for key, value in menu_items.items():
             print(f"  {self.c('warning')}{key}{self.c('end')}. {self.c('secondary')}{value}{self.c('end')}")
