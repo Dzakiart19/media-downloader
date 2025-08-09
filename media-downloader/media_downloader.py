@@ -39,7 +39,21 @@ class MediaDownloader:
                 self.ui.print_message("Pilihan tidak valid, silakan coba lagi.", style="error")
                 self.ui.pause()
 
-    def download_new(self):
+    def download_new(self, use_cookies=False):
+        cookies_file = None
+        if use_cookies:
+            self.ui.print_message(
+                "Mode Download dengan Cookies. Ini memungkinkan akses ke konten yang memerlukan login.\n"
+                "Anda perlu menyediakan file 'cookies.txt' dari browser Anda.\n"
+                "Ekstensi browser seperti 'Get cookies.txt' dapat membantu mengekspor file ini.",
+                "info"
+            )
+            cookies_file_input = self.ui.get_input("Masukkan path lengkap ke file cookies.txt (biarkan kosong untuk batal):")
+            if cookies_file_input and os.path.exists(cookies_file_input):
+                cookies_file = cookies_file_input
+            elif cookies_file_input:
+                self.ui.print_message("File cookies tidak ditemukan di path tersebut. Melanjutkan tanpa cookies.", "warning")
+
         urls_input = self.ui.get_input("Masukkan satu atau beberapa URL (pisahkan dengan spasi):")
         if not urls_input:
             return
@@ -66,7 +80,7 @@ class MediaDownloader:
                 quality = self.ui.display_quality_menu(metadata.get('formats', []))
                 if quality:
                     self.ui.print_legal_notice()
-                    self.downloader.download(url, quality)
+                    self.downloader.download(url, quality, cookies_file=cookies_file)
                     self.history.add_entry(
                         url=metadata.get('webpage_url'),
                         title=metadata.get('title'),
@@ -134,6 +148,11 @@ class MediaDownloader:
                 self.ui.update_theme()
                 self.ui.print_message(f"Tema diubah ke {new_theme}.", style="success")
             elif choice == '4':
+                new_ua = self.ui.get_input(f"User-Agent saat ini: {current_config['user_agent']}\nMasukkan User-Agent baru (biarkan kosong untuk batal): ")
+                if new_ua:
+                    self.config.set('user_agent', new_ua)
+                    self.ui.print_message("User-Agent berhasil diubah.", style="success")
+            elif choice == '5':
                 break
             else:
                 self.ui.print_message("Pilihan tidak valid.", style="error")
@@ -144,10 +163,12 @@ class MediaDownloader:
         confirm = self.ui.get_input("Apakah Anda berusia 18 tahun atau lebih dan setuju dengan persyaratan di atas? (y/n): ", lower=True)
         if confirm == 'y':
             self.ui.print_message("Persetujuan diterima untuk sesi ini.", style="info")
-            self.ui.print_message("Fitur ini adalah placeholder. Silakan masukkan URL seperti biasa.", style="info")
-            # In a real scenario, this might unlock specific sources or settings.
-            # For now, it just goes to the standard download prompt.
-            self.download_new()
+            if choice == '5':
+                self.ui.print_message("Mode Dewasa Standar: Menggunakan User-Agent khusus.", "info")
+                self.download_new(use_cookies=False)
+            elif choice == '6':
+                self.ui.print_message("Mode Dewasa Lanjutan: Menggunakan file Cookies.", "info")
+                self.download_new(use_cookies=True)
         else:
             self.ui.print_message("Anda harus menyetujui persyaratan untuk melanjutkan.", style="warning")
         self.ui.pause()

@@ -91,6 +91,7 @@ Saat pertama kali dijalankan, skrip akan membuat file konfigurasi di `~/.media_d
 -   `download_path`: Lokasi penyimpanan file.
 -   `filename_template`: Pola untuk nama file. Lihat `config.json.example` untuk detailnya.
 -   `theme`: Tema warna (`dark` atau `light`).
+-   `user_agent`: String User-Agent yang digunakan untuk menyamar sebagai browser. Ubah ini jika Anda mengalami masalah pemblokiran.
 
 ---
 
@@ -151,7 +152,7 @@ Masukkan pilihan kualitas: best
 Tekan Enter untuk kembali...
 ```
 
-**Sesi "Konten Dewasa":**
+**Sesi "Konten Dewasa 2 (dengan Cookies)":**
 ```
 $ media-downloader
 
@@ -159,18 +160,21 @@ $ media-downloader
 
 MENU UTAMA
   ...
-  5. Konten Dewasa 1
+  6. Konten Dewasa 2
   ...
-Pilih opsi: 5
+Pilih opsi: 6
 
 [-] PERINGATAN KONTEN DEWASA & LEGAL
-[*] Anda akan mengakses fitur yang mungkin mengarah pada konten yang dibatasi usia...
-[-] PENGGUNA BERTANGGUNG JAWAB PENUH...
-
+...
 Apakah Anda berusia 18 tahun atau lebih dan setuju dengan persyaratan di atas? (y/n): y
 
 [*] Persetujuan diterima untuk sesi ini.
-[*] Fitur ini adalah placeholder. Silakan masukkan URL seperti biasa.
+[*] Mode Dewasa Lanjutan: Menggunakan file Cookies.
+[*] Mode Download dengan Cookies. Ini memungkinkan akses ke konten yang memerlukan login.
+...
+Masukkan path lengkap ke file cookies.txt (biarkan kosong untuk batal): /data/data/com.termux/files/home/cookies.txt
 
-Masukkan satu atau beberapa URL (pisahkan dengan spasi): ...
+[*] Menggunakan file cookies...
+Masukkan satu atau beberapa URL (pisahkan dengan spasi): [URL yang memerlukan login]
+...
 ```
