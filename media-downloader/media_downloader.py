@@ -9,7 +9,7 @@ from modules.downloader import Downloader
 from modules.history import History
 from modules.config import Config
 
-class MediaDownloader:
+class DzeckDownloader:
     def __init__(self):
         self.config = Config()
         self.ui = UI(self.config)
@@ -33,7 +33,7 @@ class MediaDownloader:
             elif choice == '5' or choice == '6':
                 self.handle_adult_content(choice)
             elif choice == '7':
-                self.ui.print_message("Terima kasih telah menggunakan Media Downloader!", style="info")
+                self.ui.print_message("Terima kasih telah menggunakan Dzeck!", style="info")
                 sys.exit(0)
             else:
                 self.ui.print_message("Pilihan tidak valid, silakan coba lagi.", style="error")
@@ -153,6 +153,13 @@ class MediaDownloader:
                     self.config.set('user_agent', new_ua)
                     self.ui.print_message("User-Agent berhasil diubah.", style="success")
             elif choice == '5':
+                current_status = self.config.get('check_certificate')
+                self.config.set('check_certificate', not current_status)
+                new_status_text = "diaktifkan" if not current_status else "dinonaktifkan"
+                self.ui.print_message(f"Verifikasi sertifikat SSL telah {new_status_text}.", style="success")
+                if new_status_text == "dinonaktifkan":
+                    self.ui.print_message("PERINGATAN: Menonaktifkan ini adalah risiko keamanan.", style="warning")
+            elif choice == '6':
                 break
             else:
                 self.ui.print_message("Pilihan tidak valid.", style="error")
@@ -176,7 +183,7 @@ class MediaDownloader:
 
 if __name__ == '__main__':
     try:
-        app = MediaDownloader()
+        app = DzeckDownloader()
         app.run()
     except KeyboardInterrupt:
         print("\nProses dihentikan oleh pengguna. Keluar.")

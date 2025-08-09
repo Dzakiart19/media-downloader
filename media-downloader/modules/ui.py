@@ -50,14 +50,16 @@ class UI:
         self.clear_screen()
         header = f"""
 {self.c('header')}
-  __  __          _ _         ____                      _                 _
- |  \\/  |        | (_)       / __ \\                    | |               | |
- | \\  / | ___  __| |_  __ _ | |  | |_ __   ___ _ __ __ | | ___   __ _  __| |
- | |\\/| |/ _ \\/ _` | |/ _` || |  | | '_ \\ / _ \\ '_ ` _ \\| |/ _ \\ / _` |/ _` |
- | |  | |  __/ (_| | | (_| || |__| | | | |  __/ | | | | | | (_) | (_| | (_| |
- |_|  |_|\\___|\\__,_|_|\\__,_| \\____/|_| |_|\\___|_| |_| |_|_|\\___/ \\__,_|\\__,_|
+   /$$$$$$$  /$$$$$$$$ /$$$$$$$$ /$$$$$$  /$$   /$$
+  | $$__  $$| $$_____/| $$_____/|_  $$_/ | $$  /$$/
+  | $$  \ $$| $$      | $$        | $$   | $$ /$$/
+  | $$$$$$$/| $$$$$   | $$$$$     | $$   | $$$$$/
+  | $$____/ | $$__/   | $$__/     | $$   | $$  $$
+  | $$      | $$      | $$        | $$   | $$\  $$
+  | $$      | $$$$$$$$| $$$$$$$$ /$$$$$$ | $$ \  $$
+  |__/      |________/|________/|______/ |__/  \__/
 {self.c('end')}
-{self.c('primary')}                        v1.0.0 - Dibuat oleh AI Agent Jules{self.c('end')}
+{self.c('primary')}                        v1.0.0 - by Dzeck{self.c('end')}
         """
         print(header)
 
@@ -168,12 +170,14 @@ class UI:
         self.clear_screen()
         self.print_message("Pengaturan", "header")
 
+        cert_status = "Aktif" if config_data.get('check_certificate') else "Nonaktif"
         settings = {
             "1": f"Ubah Path Download ({config_data.get('download_path')})",
             "2": f"Ubah Format Nama File ({config_data.get('filename_template')})",
             "3": f"Ganti Tema (Saat ini: {config_data.get('theme')})",
             "4": f"Ubah User-Agent",
-            "5": "Kembali ke Menu Utama"
+            "5": f"Verifikasi Sertifikat SSL (Saat ini: {cert_status})",
+            "6": "Kembali ke Menu Utama"
         }
 
         for key, value in settings.items():

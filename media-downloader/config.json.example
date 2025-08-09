@@ -1,5 +1,5 @@
 {
-    "download_path": "~/storage/downloads/MediaDownloader",
+    "download_path": "~/storage/downloads/DzeckDownloader",
     "filename_template": "{platform}_{title_short}_{id}",
     "theme": "dark",
     "show_legal_notice": true,

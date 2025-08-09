@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 
 class History:
-    def __init__(self, db_path='~/.media_downloader'):
+    def __init__(self, db_path='~/.dzeck_downloader'):
         # Expand user path and create directory if it doesn't exist
         self.db_dir = os.path.expanduser(db_path)
         if not os.path.exists(self.db_dir):
