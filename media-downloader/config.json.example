@@ -1,0 +1,37 @@
+{
+    "download_path": "~/storage/downloads/MediaDownloader",
+    "filename_template": "{platform}_{title_short}_{id}",
+    "theme": "dark",
+    "show_legal_notice": true,
+    "default_quality": "best"
+}
+/*
+DOCUMENTATION:
+- download_path:
+  The absolute path to the folder where files will be saved.
+  '~' will be expanded to your home directory.
+  On Termux, '~/storage/downloads' is a good choice for saving to your phone's public Downloads folder.
+
+- filename_template:
+  A template for naming downloaded files. You can use placeholders that yt-dlp provides.
+  Some useful ones:
+  {title}: The full title of the video.
+  {title_short}: A shortened title (custom placeholder, not from yt-dlp).
+  {id}: The unique ID of the video (e.g., 'dQw4w9WgXcQ' for YouTube).
+  {platform}: The name of the site (e.g., 'youtube', 'tiktok').
+  {uploader}: The name of the uploader.
+  {upload_date}: Date of upload in YYYYMMDD format.
+  {ext}: The file extension (e.g., 'mp4', 'mp3'). This is added automatically.
+
+- theme:
+  The color scheme for the UI.
+  Options: "dark" (default), "light".
+
+- show_legal_notice:
+  Whether to show the legal disclaimer before downloading.
+  Options: true, false.
+
+- default_quality:
+  The default quality to use if not selected.
+  Options: "best", "1080p", "720p", "audio".
+*/

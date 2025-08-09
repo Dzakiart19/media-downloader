@@ -1,0 +1,172 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import os
+import sys
+import json
+from modules.ui import UI
+from modules.downloader import Downloader
+from modules.history import History
+from modules.config import Config
+
+class MediaDownloader:
+    def __init__(self):
+        self.config = Config()
+        self.ui = UI(self.config)
+        self.history = History()
+        self.downloader = Downloader(self.config, self.ui)
+        self.queue = []
+
+    def run(self):
+        while True:
+            self.ui.display_header()
+            choice = self.ui.display_main_menu()
+
+            if choice == '1':
+                self.download_new()
+            elif choice == '2':
+                self.show_queue()
+            elif choice == '3':
+                self.show_history()
+            elif choice == '4':
+                self.settings_menu()
+            elif choice == '5' or choice == '6':
+                self.handle_adult_content(choice)
+            elif choice == '7':
+                self.ui.print_message("Terima kasih telah menggunakan Media Downloader!", style="info")
+                sys.exit(0)
+            else:
+                self.ui.print_message("Pilihan tidak valid, silakan coba lagi.", style="error")
+                self.ui.pause()
+
+    def download_new(self):
+        urls_input = self.ui.get_input("Masukkan satu atau beberapa URL (pisahkan dengan spasi):")
+        if not urls_input:
+            return
+
+        urls = urls_input.split()
+
+        for url in urls:
+            self.ui.print_message(f"Memproses URL: {url}", style="info")
+
+            # Simple validation
+            if not url.startswith(('http://', 'https://')):
+                self.ui.print_message(f"URL tidak valid: {url}", style="error")
+                continue
+
+            # Preview metadata
+            metadata = self.downloader.get_metadata(url)
+            if not metadata:
+                continue
+
+            self.ui.display_metadata_preview(metadata)
+
+            confirm = self.ui.get_input("Download file ini? (y/n): ", lower=True)
+            if confirm == 'y':
+                quality = self.ui.display_quality_menu(metadata.get('formats', []))
+                if quality:
+                    self.ui.print_legal_notice()
+                    self.downloader.download(url, quality)
+                    self.history.add_entry(
+                        url=metadata.get('webpage_url'),
+                        title=metadata.get('title'),
+                        platform=metadata.get('extractor_key'),
+                        quality=quality
+                    )
+            else:
+                self.ui.print_message("Download dibatalkan.", style="warning")
+        self.ui.pause()
+
+
+    def show_queue(self):
+        self.ui.print_message("Fitur antrian belum diimplementasikan sepenuhnya.", style="warning")
+        # In a full implementation, this would show self.queue and manage it.
+        self.ui.pause()
+
+    def show_history(self):
+        while True:
+            history_entries = self.history.get_all()
+            choice = self.ui.display_history(history_entries)
+
+            if choice.lower() == 'c':
+                confirm = self.ui.get_input("Anda yakin ingin menghapus semua riwayat? (y/n): ", lower=True)
+                if confirm == 'y':
+                    self.history.clear_all()
+                    self.ui.print_message("Riwayat telah dihapus.", style="success")
+            elif choice.lower() == 'o':
+                download_path = self.config.get('download_path')
+                self.ui.print_message(f"Mencoba membuka folder: {download_path}", style="info")
+                try:
+                    # Termux command to open a directory
+                    os.system(f'termux-open "{download_path}"')
+                except Exception as e:
+                    self.ui.print_message(f"Gagal membuka folder: {e}", style="error")
+            elif choice.lower() == 'b':
+                break
+            else:
+                self.ui.print_message("Pilihan tidak valid.", style="error")
+            self.ui.pause()
+
+
+    def settings_menu(self):
+        while True:
+            current_config = self.config.get_all()
+            choice = self.ui.display_settings_menu(current_config)
+
+            if choice == '1':
+                new_path = self.ui.get_input(f"Path download saat ini: {current_config['download_path']}\nMasukkan path baru: ")
+                # Basic validation for Termux storage
+                if new_path.startswith('/data/data/com.termux/files/home/storage/'):
+                    if not os.path.exists(new_path):
+                        os.makedirs(new_path)
+                    self.config.set('download_path', new_path)
+                    self.ui.print_message("Path download berhasil diubah.", style="success")
+                else:
+                    self.ui.print_message("Path tidak valid. Harus berada di dalam storage Termux.", style="error")
+            elif choice == '2':
+                new_format = self.ui.get_input(f"Format nama file saat ini: {current_config['filename_template']}\nMasukkan format baru: ")
+                self.config.set('filename_template', new_format)
+                self.ui.print_message("Format nama file berhasil diubah.", style="success")
+            elif choice == '3':
+                current_theme = self.config.get('theme')
+                new_theme = 'dark' if current_theme == 'light' else 'light'
+                self.config.set('theme', new_theme)
+                self.ui.update_theme()
+                self.ui.print_message(f"Tema diubah ke {new_theme}.", style="success")
+            elif choice == '4':
+                break
+            else:
+                self.ui.print_message("Pilihan tidak valid.", style="error")
+            self.ui.pause()
+
+    def handle_adult_content(self, choice):
+        self.ui.display_adult_warning()
+        confirm = self.ui.get_input("Apakah Anda berusia 18 tahun atau lebih dan setuju dengan persyaratan di atas? (y/n): ", lower=True)
+        if confirm == 'y':
+            self.ui.print_message("Persetujuan diterima untuk sesi ini.", style="info")
+            self.ui.print_message("Fitur ini adalah placeholder. Silakan masukkan URL seperti biasa.", style="info")
+            # In a real scenario, this might unlock specific sources or settings.
+            # For now, it just goes to the standard download prompt.
+            self.download_new()
+        else:
+            self.ui.print_message("Anda harus menyetujui persyaratan untuk melanjutkan.", style="warning")
+        self.ui.pause()
+
+
+if __name__ == '__main__':
+    try:
+        app = MediaDownloader()
+        app.run()
+    except KeyboardInterrupt:
+        print("\nProses dihentikan oleh pengguna. Keluar.")
+        sys.exit(0)
+    except Exception as e:
+        print(f"\nTerjadi error yang tidak terduga: {e}")
+        # Optionally log to a file
+        with open("error.log", "a") as f:
+            import traceback
+            f.write(f"--- ERROR ---\n")
+            f.write(str(e) + "\n")
+            f.write(traceback.format_exc())
+            f.write("--------------\n\n")
+        sys.exit(1)
