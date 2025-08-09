@@ -60,6 +60,10 @@ class Downloader:
         if cookies_file and os.path.exists(cookies_file):
             opts['cookiefile'] = cookies_file
 
+        # Add the no-check-certificate option based on config
+        if not self.config.get('check_certificate', False):
+            opts['nocheckcertificate'] = True
+
         if extra_opts and isinstance(extra_opts, dict):
             opts.update(extra_opts)
 

@@ -168,12 +168,14 @@ class UI:
         self.clear_screen()
         self.print_message("Pengaturan", "header")
 
+        cert_status = "Aktif" if config_data.get('check_certificate') else "Nonaktif"
         settings = {
             "1": f"Ubah Path Download ({config_data.get('download_path')})",
             "2": f"Ubah Format Nama File ({config_data.get('filename_template')})",
             "3": f"Ganti Tema (Saat ini: {config_data.get('theme')})",
             "4": f"Ubah User-Agent",
-            "5": "Kembali ke Menu Utama"
+            "5": f"Verifikasi Sertifikat SSL (Saat ini: {cert_status})",
+            "6": "Kembali ke Menu Utama"
         }
 
         for key, value in settings.items():

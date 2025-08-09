@@ -92,10 +92,14 @@ Saat pertama kali dijalankan, skrip akan membuat file konfigurasi di `~/.media_d
 -   `filename_template`: Pola untuk nama file. Lihat `config.json.example` untuk detailnya.
 -   `theme`: Tema warna (`dark` atau `light`).
 -   `user_agent`: String User-Agent yang digunakan untuk menyamar sebagai browser. Ubah ini jika Anda mengalami masalah pemblokiran.
+-   `check_certificate`: Mengaktifkan atau menonaktifkan verifikasi sertifikat SSL. Opsi: `true` atau `false`. Nonaktifkan (`false`) jika Anda mendapatkan error `[SSL: CERTIFICATE_VERIFY_FAILED]`. **Peringatan:** Menonaktifkan ini dapat menjadi risiko keamanan.
 
 ---
 
 ## Pemecahan Masalah (Troubleshooting)
+
+-   **Error `[SSL: CERTIFICATE_VERIFY_FAILED]` saat download:**
+    Ini berarti koneksi aman tidak dapat diverifikasi. Buka `Pengaturan` -> `Verifikasi Sertifikat SSL` dan nonaktifkan. Jalankan kembali unduhan Anda.
 
 -   **Error "Permission Denied" saat menyimpan file:**
     Pastikan Anda telah menjalankan `termux-setup-storage` dan memberikan izin. Juga, periksa kembali `download_path` di pengaturan Anda untuk memastikan itu adalah lokasi yang valid dan dapat ditulis (misalnya, di bawah `~/storage/`).

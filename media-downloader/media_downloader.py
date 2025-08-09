@@ -153,6 +153,13 @@ class MediaDownloader:
                     self.config.set('user_agent', new_ua)
                     self.ui.print_message("User-Agent berhasil diubah.", style="success")
             elif choice == '5':
+                current_status = self.config.get('check_certificate')
+                self.config.set('check_certificate', not current_status)
+                new_status_text = "diaktifkan" if not current_status else "dinonaktifkan"
+                self.ui.print_message(f"Verifikasi sertifikat SSL telah {new_status_text}.", style="success")
+                if new_status_text == "dinonaktifkan":
+                    self.ui.print_message("PERINGATAN: Menonaktifkan ini adalah risiko keamanan.", style="warning")
+            elif choice == '6':
                 break
             else:
                 self.ui.print_message("Pilihan tidak valid.", style="error")
