@@ -174,7 +174,8 @@ class UI:
             "3": f"Ganti Tema (Saat ini: {config_data.get('theme')})",
             "4": f"Ubah User-Agent",
             "5": f"Verifikasi Sertifikat SSL (Saat ini: {cert_status})",
-            "6": "Kembali ke Menu Utama"
+            "6": f"Ubah Proxy (Saat ini: {config_data.get('proxy') or 'tidak digunakan'})",
+            "7": "Kembali ke Menu Utama"
         }
 
         for key, value in settings.items():

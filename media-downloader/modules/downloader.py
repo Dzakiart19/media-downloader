@@ -9,6 +9,18 @@ class Downloader:
         self.config = config
         self.ui = ui
 
+    def _build_headers(self, url: str) -> dict:
+        parsed = urlparse(url)
+        referer = f"{parsed.scheme}://{parsed.netloc}" if parsed.scheme and parsed.netloc else 'https://www.google.com'
+        return {
+            'User-Agent': self.config.get('user_agent'),
+            'Referer': referer,
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9,id;q=0.8',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+        }
+
     def _convert_filename_template(self, template: str) -> str:
         """Converts custom placeholder template to yt-dlp outtmpl.
         Supported placeholders: {platform}, {title}, {title_short}, {id}
@@ -39,19 +51,18 @@ class Downloader:
         elif quality == 'audio':
             format_string = 'bestaudio/best'
 
-        user_agent = self.config.get('user_agent')
-
         opts = {
             'format': format_string,
             'outtmpl': output_template,
             'progress_hooks': [self.ui.download_progress_hook],
             'writemetadata': True,
             'external_downloader': 'aria2c',
-            'http_headers': {
-                'User-Agent': user_agent,
-                # Default referer is set per-request in get_metadata or before download when URL is known
-                'Referer': 'https://www.google.com'
-            },
+            # network robustness
+            'retries': 10,
+            'fragment_retries': 10,
+            'socket_timeout': 30,
+            'http_chunk_size': 1048576,
+            'concurrent_fragment_downloads': 1,
             'external_downloader_args': ['-x', '16', '-s', '16', '-k', '1M'],
             'postprocessors': [{
                 'key': 'FFmpegMetadata',
@@ -61,6 +72,10 @@ class Downloader:
             'noprogress': True, # We use our own progress hook
             'noplaylist': True, # Process only single video if playlist URL is given
         }
+
+        proxy = self.config.get('proxy')
+        if proxy:
+            opts['proxy'] = proxy
 
         if quality == 'audio':
             opts['postprocessors'].append({
@@ -84,21 +99,18 @@ class Downloader:
     def get_metadata(self, url):
         """Fetches video metadata without downloading."""
         self.ui.print_message("Mengambil metadata...", "info", wrap=False)
-        parsed = urlparse(url)
-        referer = f"{parsed.scheme}://{parsed.netloc}" if parsed.scheme and parsed.netloc else 'https://www.google.com'
-        user_agent = self.config.get('user_agent')
         opts = {
             'quiet': True,
             'extract_flat': 'in_playlist',
             'skip_download': True,
             'noplaylist': True,
-            'http_headers': {
-                'User-Agent': user_agent,
-                'Referer': referer
-            },
+            'http_headers': self._build_headers(url),
         }
         if not self.config.get('check_certificate', False):
             opts['nocheckcertificate'] = True
+        proxy = self.config.get('proxy')
+        if proxy:
+            opts['proxy'] = proxy
         try:
             with yt_dlp.YoutubeDL(opts) as ydl:
                 info_dict = ydl.extract_info(url, download=False)
@@ -108,6 +120,8 @@ class Downloader:
                 return info_dict
         except yt_dlp.utils.DownloadError as e:
             self.ui.print_message(f"Gagal mengambil metadata: {e}", "error")
+            if 'Connection reset by peer' in str(e) and not self.config.get('proxy'):
+                self.ui.print_message("Situs mungkin memblokir koneksi langsung. Coba atur Proxy di menu Pengaturan.", "warning")
             return None
         except Exception as e:
             self.ui.print_message(f"Terjadi error tidak terduga saat mengambil metadata: {e}", "error")
@@ -120,14 +134,9 @@ class Downloader:
             self.ui.print_message("Menggunakan file cookies...", "info")
 
         try:
-            # Update referer header to match the target domain for better compatibility with adult sites
-            parsed = urlparse(url)
-            referer = f"{parsed.scheme}://{parsed.netloc}" if parsed.scheme and parsed.netloc else 'https://www.google.com'
+            # Update headers to match target domain for better compatibility with adult sites
             extra_opts = {
-                'http_headers': {
-                    'User-Agent': self.config.get('user_agent'),
-                    'Referer': referer,
-                }
+                'http_headers': self._build_headers(url)
             }
             opts = self._get_yt_dlp_options(quality, cookies_file=cookies_file, extra_opts=extra_opts)
             with yt_dlp.YoutubeDL(opts) as ydl:
@@ -136,5 +145,7 @@ class Downloader:
                 # The success message is handled by the progress hook
         except yt_dlp.utils.DownloadError as e:
             self.ui.print_message(f"Download gagal: {e}", "error")
+            if 'Connection reset by peer' in str(e) and not self.config.get('proxy'):
+                self.ui.print_message("Situs mungkin memblokir koneksi langsung. Coba atur Proxy di menu Pengaturan.", "warning")
         except Exception as e:
             self.ui.print_message(f"Terjadi error tidak terduga saat download: {e}", "error")

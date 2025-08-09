@@ -160,6 +160,10 @@ class DzeckDownloader:
                 if new_status_text == "dinonaktifkan":
                     self.ui.print_message("PERINGATAN: Menonaktifkan ini adalah risiko keamanan.", style="warning")
             elif choice == '6':
+                new_proxy = self.ui.get_input(f"Proxy saat ini: {current_config.get('proxy') or 'tidak digunakan'}\nMasukkan proxy baru (contoh: http://127.0.0.1:8080 atau socks5://127.0.0.1:1080). Biarkan kosong untuk menonaktifkan: ")
+                self.config.set('proxy', new_proxy.strip())
+                self.ui.print_message("Proxy diperbarui.", style="success")
+            elif choice == '7':
                 break
             else:
                 self.ui.print_message("Pilihan tidak valid.", style="error")
