@@ -30,10 +30,10 @@ class DzeckDownloader:
                 self.show_history()
             elif choice == '4':
                 self.settings_menu()
-            elif choice == '5' or choice == '6':
+            elif choice == '5':
                 self.handle_adult_content(choice)
-            elif choice == '7':
-                self.ui.print_message("Terima kasih telah menggunakan Dzeck!", style="info")
+            elif choice == '6':
+                self.ui.print_message("Terima kasih telah menggunakan DZECK!", style="info")
                 sys.exit(0)
             else:
                 self.ui.print_message("Pilihan tidak valid, silakan coba lagi.", style="error")
@@ -61,7 +61,7 @@ class DzeckDownloader:
         urls = urls_input.split()
 
         for url in urls:
-            self.ui.print_message(f"Memproses URL: {url}", style="info")
+            self.ui.print_message(f"Memproses URL: {url}", style="info", wrap=False)
 
             # Simple validation
             if not url.startswith(('http://', 'https://')):
@@ -170,12 +170,8 @@ class DzeckDownloader:
         confirm = self.ui.get_input("Apakah Anda berusia 18 tahun atau lebih dan setuju dengan persyaratan di atas? (y/n): ", lower=True)
         if confirm == 'y':
             self.ui.print_message("Persetujuan diterima untuk sesi ini.", style="info")
-            if choice == '5':
-                self.ui.print_message("Mode Dewasa Standar: Menggunakan User-Agent khusus.", "info")
-                self.download_new(use_cookies=False)
-            elif choice == '6':
-                self.ui.print_message("Mode Dewasa Lanjutan: Menggunakan file Cookies.", "info")
-                self.download_new(use_cookies=True)
+            self.ui.print_message("Mode Dewasa: Menggunakan User-Agent khusus.", "info")
+            self.download_new(use_cookies=False)
         else:
             self.ui.print_message("Anda harus menyetujui persyaratan untuk melanjutkan.", style="warning")
         self.ui.pause()

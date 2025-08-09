@@ -2,22 +2,33 @@ import yt_dlp
 import os
 import json
 from datetime import datetime
+from urllib.parse import urlparse
 
 class Downloader:
     def __init__(self, config, ui):
         self.config = config
         self.ui = ui
 
+    def _convert_filename_template(self, template: str) -> str:
+        """Converts custom placeholder template to yt-dlp outtmpl.
+        Supported placeholders: {platform}, {title}, {title_short}, {id}
+        """
+        result = template
+        result = result.replace('{platform}', '%(extractor_key)s')
+        result = result.replace('{title_short}', '%(title).50B')
+        result = result.replace('{title}', '%(title)s')
+        result = result.replace('{id}', '%(id)s')
+        if '%(ext)s' not in result:
+            result += '.%(ext)s'
+        return result
+
     def _get_yt_dlp_options(self, quality, cookies_file=None, extra_opts=None):
         """Constructs the options dictionary for yt-dlp."""
         download_path = self.config.get('download_path')
         filename_template = self.config.get('filename_template')
 
-        # Ensure the filename template has placeholders for extension
-        if not '%(ext)s' in filename_template:
-            filename_template += '.%(ext)s'
-
-        output_template = os.path.join(download_path, filename_template)
+        # Convert user template to yt-dlp's outtmpl format
+        output_template = os.path.join(download_path, self._convert_filename_template(filename_template))
 
         # Format selection
         format_string = "best"
@@ -38,7 +49,8 @@ class Downloader:
             'external_downloader': 'aria2c',
             'http_headers': {
                 'User-Agent': user_agent,
-                'Referer': 'https://www.google.com' # Adding a generic referer can also help
+                # Default referer is set per-request in get_metadata or before download when URL is known
+                'Referer': 'https://www.google.com'
             },
             'external_downloader_args': ['-x', '16', '-s', '16', '-k', '1M'],
             'postprocessors': [{
@@ -71,12 +83,22 @@ class Downloader:
 
     def get_metadata(self, url):
         """Fetches video metadata without downloading."""
-        self.ui.print_message("Mengambil metadata...", "info")
+        self.ui.print_message("Mengambil metadata...", "info", wrap=False)
+        parsed = urlparse(url)
+        referer = f"{parsed.scheme}://{parsed.netloc}" if parsed.scheme and parsed.netloc else 'https://www.google.com'
+        user_agent = self.config.get('user_agent')
         opts = {
             'quiet': True,
             'extract_flat': 'in_playlist',
             'skip_download': True,
+            'noplaylist': True,
+            'http_headers': {
+                'User-Agent': user_agent,
+                'Referer': referer
+            },
         }
+        if not self.config.get('check_certificate', False):
+            opts['nocheckcertificate'] = True
         try:
             with yt_dlp.YoutubeDL(opts) as ydl:
                 info_dict = ydl.extract_info(url, download=False)
@@ -98,7 +120,16 @@ class Downloader:
             self.ui.print_message("Menggunakan file cookies...", "info")
 
         try:
-            opts = self._get_yt_dlp_options(quality, cookies_file=cookies_file)
+            # Update referer header to match the target domain for better compatibility with adult sites
+            parsed = urlparse(url)
+            referer = f"{parsed.scheme}://{parsed.netloc}" if parsed.scheme and parsed.netloc else 'https://www.google.com'
+            extra_opts = {
+                'http_headers': {
+                    'User-Agent': self.config.get('user_agent'),
+                    'Referer': referer,
+                }
+            }
+            opts = self._get_yt_dlp_options(quality, cookies_file=cookies_file, extra_opts=extra_opts)
             with yt_dlp.YoutubeDL(opts) as ydl:
                 # The actual download happens here
                 ydl.download([url])
